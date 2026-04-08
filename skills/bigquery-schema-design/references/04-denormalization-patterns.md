@@ -58,5 +58,5 @@ GROUP BY sale_date, region;
 ## Edge Cases / Pitfalls
 - Denormalized tables require rebuilding when dimension attributes change. Use scheduled queries or `MERGE` statements to keep them fresh.
 - Incremental MVs support INNER JOINs and JOIN UNNEST. OUTER JOINs, HAVING, and UNION ALL require non-incremental mode. Best for simple aggregations; complex transforms need pre-aggregated tables.
-- BigQuery automatically rewrites queries to use materialized views when beneficial (`materialized_view_rewrite`). No query changes needed.
+- BigQuery's smart tuning automatically rewrites queries to use materialized views when beneficial (enabled by default, no configuration needed). No query changes needed.
 - Over-denormalization creates extremely wide tables (200+ columns) that are hard to maintain. Group related attributes into STRUCTs to stay organized.

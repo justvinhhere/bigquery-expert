@@ -6,7 +6,7 @@
 Subqueries used directly inside `WHERE` clause predicates. These "dynamic predicates" are recomputed during query execution, preventing query optimization.
 
 ## Why It Matters
-BigQuery cannot optimize a filter that depends on a subquery result computed at runtime. Extracting the subquery result into a variable (using `DECLARE`) allows BigQuery to treat it as a static value, enabling better partition pruning and predicate pushdown.
+BigQuery cannot optimize a filter that depends on a subquery result computed at runtime. Extracting the subquery result into a variable (using `DECLARE`) pre-computes the value before the main query executes, improving optimization opportunities and avoiding repeated subquery evaluation. Note: `DECLARE` variables are resolved at runtime and may not guarantee partition pruning the same way literal constants do, but they consistently improve query plan efficiency.
 
 ## Before (Single-Value)
 ```sql

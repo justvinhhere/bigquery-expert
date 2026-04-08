@@ -33,9 +33,9 @@ SET OPTIONS (partition_expiration_days = 365)
 | Time travel | 2-7 days (configurable) | Billed as active storage | Query/restore past state |
 | Fail-safe | 7 days (after time travel) | Billed as active storage | Disaster recovery (Google-managed) |
 
-Reduce time travel to save storage:
+Reduce time travel to save storage (configured at the dataset level):
 ```sql
-ALTER TABLE `project.dataset.events`
+ALTER SCHEMA `project.dataset`
 SET OPTIONS (max_time_travel_hours = 48)
 ```
 

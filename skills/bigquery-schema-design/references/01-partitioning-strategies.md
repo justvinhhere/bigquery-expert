@@ -46,7 +46,7 @@ CREATE TABLE `project.dataset.raw_logs`
   payload STRING,
   source STRING
 )
-PARTITION BY _PARTITIONDATE
+PARTITION BY _PARTITIONTIME
 OPTIONS(description = "Raw logs partitioned by load date");
 ```
 

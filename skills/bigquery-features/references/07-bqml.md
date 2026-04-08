@@ -58,6 +58,6 @@ SELECT * FROM ML.FORECAST(MODEL `project.dataset.sales_forecast`,
 - **Cost:** Model training consumes slots (on-demand: billed per bytes processed; flat-rate: consumes reservation slots). Large training jobs can be expensive -- use `max_iterations` and `early_stop` to control cost.
 - **Supported model types:** LINEAR_REG, LOGISTIC_REG, KMEANS, BOOSTED_TREE_CLASSIFIER/REGRESSOR, ARIMA_PLUS, DNN_CLASSIFIER/REGRESSOR, AUTOML_CLASSIFIER/REGRESSOR, imported TensorFlow and ONNX models.
 - **Feature preprocessing:** BQML auto-encodes categoricals (one-hot) and standardizes numerics by default. Override with `TRANSFORM` clause for custom preprocessing.
-- **Model size limits:** Built-in models have a 256 MB limit. Imported TF/ONNX models can be up to 450 MB.
+- **Model size limits:** Imported TensorFlow and ONNX models can be up to 450 MB. Built-in model types (LINEAR_REG, KMEANS, etc.) do not have a documented user-visible size cap.
 - **Prediction quotas:** `ML.PREDICT` is subject to standard query limits. For serving at scale, export the model to Vertex AI endpoints.
 - **Data leakage:** BQML does not auto-split train/test. You must partition data yourself or use `DATA_SPLIT_METHOD`.

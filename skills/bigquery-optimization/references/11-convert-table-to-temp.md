@@ -6,7 +6,7 @@
 A persistent table (`CREATE TABLE`) that is created and then dropped (`DROP TABLE`) within the same script. This indicates the table is only used temporarily but incurs persistent storage costs.
 
 ## Why It Matters
-Persistent tables incur time travel (7 days) and fail-safe (7 days) storage costs even after being dropped. Converting to `CREATE TEMP TABLE` avoids these charges entirely.
+Persistent tables incur time travel (2--7 days, configurable at dataset level) and fail-safe (7 days) storage costs even after being dropped. Under the physical storage billing model, these appear as separate charges. Converting to `CREATE TEMP TABLE` avoids these charges entirely since temp tables are not subject to time travel or fail-safe.
 
 ## Before
 ```sql
@@ -17,9 +17,9 @@ DROP TABLE `my_dataset.staging_data`;
 
 ## After
 ```sql
-CREATE TEMP TABLE `my_dataset.staging_data` (id INT64, name STRING);
+CREATE TEMP TABLE staging_data (id INT64, name STRING);
 -- ... processing ...
-DROP TABLE `my_dataset.staging_data`;
+DROP TABLE staging_data;
 ```
 
 ## Edge Cases

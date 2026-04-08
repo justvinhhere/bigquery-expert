@@ -43,7 +43,7 @@ monthly_editions  = avg_slots * hours_in_month * rate_per_slot_hr
 
 ## Edge Cases / Pitfalls
 - Flat-rate (legacy) pricing is deprecated. Migrate to editions.
-- On-demand has a per-project concurrency limit of 100 concurrent queries (default).
+- On-demand uses dynamic concurrency with query queuing (up to 1,000 interactive queries queued per project).
 - Editions autoscaling has a ramp-up delay; sudden spikes may queue.
 - Cached results bypass cost on-demand but still consume slots in editions.
 - Free tier resets monthly; unused free TB does not roll over.

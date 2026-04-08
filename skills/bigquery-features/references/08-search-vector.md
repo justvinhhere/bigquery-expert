@@ -59,5 +59,5 @@ FROM VECTOR_SEARCH(TABLE `project.dataset.knowledge_base`, 'embedding',
 - **SEARCH() without an index:** SEARCH() works without a search index by falling back to a full table scan. An index is strongly recommended for large tables to avoid scanning all data, but its absence does not cause an error.
 - **Vector distance metrics:** Supported types are `COSINE`, `EUCLIDEAN`, and `DOT_PRODUCT`. Use COSINE for normalized embeddings (most common), EUCLIDEAN for spatial data.
 - **Vector index threshold:** Vector indexes provide acceleration only for tables above ~10MB of embedding data. Smaller tables use brute-force scan automatically.
-- **Embedding dimensions:** BigQuery supports embeddings up to 1600 dimensions. Larger embeddings must be truncated or dimensionality-reduced before indexing.
+- **Embedding dimensions:** BigQuery stores embeddings as ARRAY<FLOAT64> with no strict dimension cap. Practical limits depend on storage and index build time. Google's own models output up to 1408 dimensions; OpenAI's text-embedding-3-large outputs 3072.
 - **Use cases:** Full-text search for keyword/log search. Vector search for semantic similarity, RAG retrieval, recommendation engines, and near-duplicate detection.

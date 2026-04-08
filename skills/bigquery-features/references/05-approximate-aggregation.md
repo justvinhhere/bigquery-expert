@@ -8,7 +8,7 @@ BigQuery's approximate aggregate functions for fast cardinality estimation, quan
 
 ## Why It Matters
 
-Exact `COUNT(DISTINCT)` on high-cardinality columns over large datasets is expensive (requires shuffling all unique values). Approximate functions provide results within ~1% error at a fraction of the cost and time.
+Exact `COUNT(DISTINCT)` on high-cardinality columns over large datasets is expensive (requires shuffling all unique values). Approximate functions provide results within ~2% error at a fraction of the cost and time.
 
 ## Example
 
@@ -55,7 +55,7 @@ WHERE event_date BETWEEN '2025-01-01' AND '2025-01-07';
 
 ## Edge Cases / Pitfalls
 
-- **Error bounds:** `APPROX_COUNT_DISTINCT` guarantees ~1% relative error for typical cardinalities. For very low cardinality (<1000), exact `COUNT(DISTINCT)` is fast enough and more precise.
+- **Error bounds:** `APPROX_COUNT_DISTINCT` typically has ~2% relative error (HyperLogLog++ based). For very low cardinality (<1000), exact `COUNT(DISTINCT)` is fast enough and more precise.
 - **NULL handling:** All approximate functions ignore NULLs, same as their exact counterparts.
 - **HLL_COUNT sketch size:** Each sketch is ~32 KB. For tables with many groups, the sketch column can add significant storage.
 - **APPROX_TOP_COUNT output:** Returns an ARRAY of STRUCT<value, count>. Access results with UNNEST or array indexing.

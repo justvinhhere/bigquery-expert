@@ -13,7 +13,7 @@ Exact `COUNT(DISTINCT)` on high-cardinality columns over large datasets is expen
 ## Example
 
 ```sql
--- APPROX_COUNT_DISTINCT: fast cardinality (~1% error)
+-- APPROX_COUNT_DISTINCT: fast cardinality (~1-2% error)
 SELECT
   event_date,
   APPROX_COUNT_DISTINCT(user_id) AS approx_unique_users
@@ -55,7 +55,7 @@ WHERE event_date BETWEEN '2025-01-01' AND '2025-01-07';
 
 ## Edge Cases / Pitfalls
 
-- **Error bounds:** `APPROX_COUNT_DISTINCT` typically has ~2% relative error (HyperLogLog++ based). For very low cardinality (<1000), exact `COUNT(DISTINCT)` is fast enough and more precise.
+- **Error bounds:** `APPROX_COUNT_DISTINCT` uses HyperLogLog++ with ~1-2% relative error depending on cardinality and data distribution. For very low cardinality (<1000), exact `COUNT(DISTINCT)` is fast enough and more precise.
 - **NULL handling:** All approximate functions ignore NULLs, same as their exact counterparts.
 - **HLL_COUNT sketch size:** Each sketch is ~32 KB. For tables with many groups, the sketch column can add significant storage.
 - **APPROX_TOP_COUNT output:** Returns an ARRAY of STRUCT<value, count>. Access results with UNNEST or array indexing.

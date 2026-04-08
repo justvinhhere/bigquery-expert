@@ -1,0 +1,18 @@
+{
+  "name": "bigquery-optimizer",
+  "version": "1.0.0",
+  "description": "Detects 11 BigQuery SQL performance anti-patterns and helps write optimized queries.",
+  "author": {
+    "name": "Vinh Nguyen"
+  },
+  "repository": "https://github.com/justvinhhere/bigquery-optimizer",
+  "license": "Apache-2.0",
+  "keywords": [
+    "bigquery",
+    "sql",
+    "optimization",
+    "anti-patterns",
+    "google-cloud",
+    "performance"
+  ]
+}

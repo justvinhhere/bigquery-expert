@@ -6,7 +6,7 @@
 JOIN operations where a smaller table is on the left (first position) and a larger table is on the right. BigQuery's best practice is to place the largest table first.
 
 ## Why It Matters
-BigQuery uses the right-side table as the "build" side for hash joins, broadcasting it to all workers. If the large table is on the right, it must be broadcast, which is much more expensive than broadcasting the small table.
+In broadcast joins, BigQuery sends the smaller table to every worker processing the larger table. The query optimizer uses table position as a hint about relative sizes when statistics are unavailable. Placing the largest table first helps the optimizer choose the most efficient join strategy.
 
 ## Before
 ```sql

@@ -3,7 +3,7 @@
 **Severity:** High
 
 ## What It Detects
-A CTE (Common Table Expression, defined with `WITH`) whose alias is referenced more than once in the query. In BigQuery, CTEs are inlined at each reference point -- the entire CTE query is re-executed for every reference.
+A CTE (Common Table Expression, defined with `WITH`) whose alias is referenced more than once in the query. In BigQuery, non-recursive CTEs are typically inlined at each reference point -- the CTE query is re-executed for every reference. The optimizer may sometimes avoid re-execution, but this is not guaranteed.
 
 ## Why It Matters
 If a CTE performs expensive computation (aggregations, joins, large scans) and is referenced 2+ times, that computation runs 2+ times. This doubles (or more) the slot consumption and bytes processed.

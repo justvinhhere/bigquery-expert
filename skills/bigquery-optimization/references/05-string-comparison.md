@@ -24,4 +24,4 @@ WHERE dim1 LIKE '%test%'
 
 ## Edge Cases
 - Only flag `REGEXP_CONTAINS` with simple `.*X.*` patterns. Complex regex patterns (character classes, alternation, anchors) legitimately need `REGEXP_CONTAINS`.
-- `REGEXP_CONTAINS(col, 'exact_value')` without wildcards can be replaced with `col LIKE '%exact_value%'` or even `col = 'exact_value'` depending on intent.
+- `REGEXP_CONTAINS(col, 'exact_value')` without wildcards matches the value as a substring anywhere, so replace with `col LIKE '%exact_value%'`. Only use `col = 'exact_value'` if the original regex uses anchors (`'^exact_value$'`).

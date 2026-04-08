@@ -1,13 +1,13 @@
 {
   "name": "justvinhhere-bigquery-optimizer",
-  "description": "BigQuery SQL optimization plugins by Vinh Nguyen",
+  "description": "Comprehensive BigQuery skill suite for Claude Code",
   "owner": {
     "name": "Vinh Nguyen"
   },
   "plugins": [
     {
       "name": "bigquery-optimizer",
-      "description": "Detects 11 BigQuery SQL performance anti-patterns and helps write optimized queries.",
+      "description": "Comprehensive BigQuery skill suite: query optimization, SQL generation, schema design, cost optimization, and feature guidance.",
       "source": "./"
     }
   ]

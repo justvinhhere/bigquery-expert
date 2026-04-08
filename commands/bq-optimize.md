@@ -20,7 +20,7 @@ Rewrite the provided BigQuery SQL with all detected anti-patterns fixed, using t
    - Preserve the original query semantics exactly -- the optimized query must return the same data.
    - Apply fixes in this order: SimpleSelectStar, SemiJoinWithoutAgg, DynamicPredicate,
      OrderByWithoutLimit, StringComparison, CTEsEvalMultipleTimes, LatestRecordWithAnalyticFun,
-     WhereOrder, MissingDropStatement, ConvertTableToTemp.
+     JoinOrder, WhereOrder, MissingDropStatement, ConvertTableToTemp.
 
 4. **Output the result:**
 

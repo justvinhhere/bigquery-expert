@@ -60,6 +60,7 @@ WHERE col1 = 1
 ```
 
 ## Edge Cases
+- This is a heuristic based on operator type, not actual data selectivity. Real-world impact varies -- a `!=` on a boolean may be more selective than `=` on a high-cardinality column. Use as a tiebreaker, not a strict rule.
 - Only applies to predicates connected by `AND`. `OR`-connected predicates are not reorderable for this optimization.
 - Does not apply to predicates on different tables in a JOIN condition.
 - Function calls in predicates (e.g., `LOWER(col) = 'x'`) are not ranked by this heuristic.

@@ -26,7 +26,7 @@ Direct copy-paste from other databases produces syntax errors or silently wrong 
 
 ### QUALIFY, set operations, dates
 - **QUALIFY:** BigQuery supports it natively. Preserve from Snowflake/Databricks as-is.
-- **EXCEPT (PG) / MINUS (Oracle):** Use `EXCEPT DISTINCT`. **INTERSECT:** Use `INTERSECT DISTINCT`.
+- **EXCEPT / MINUS:** BigQuery requires the explicit `DISTINCT` keyword -- plain `EXCEPT` is a syntax error in GoogleSQL. Convert `EXCEPT` (PG) and `MINUS` (Oracle) to `EXCEPT DISTINCT`. Similarly, `INTERSECT` → `INTERSECT DISTINCT`.
 - **Date literals:** `DATE '2024-01-15'`. **TZ timestamps:** `TIMESTAMP('2024-01-15 10:00:00', 'America/New_York')`.
 - **Epoch:** `UNIX_SECONDS(ts)`. **Truncation:** `DATE_TRUNC(d, MONTH)`, `TIMESTAMP_TRUNC(ts, HOUR)`.
 

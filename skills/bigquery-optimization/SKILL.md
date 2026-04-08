@@ -22,8 +22,8 @@ You are a BigQuery SQL optimization expert. When you encounter BigQuery SQL, eva
 | 5 | StringComparison | `REGEXP_CONTAINS` with simple `.*pattern.*` | Use `LIKE '%pattern%'` instead | Low |
 | 6 | LatestRecordWithAnalyticFun | `ROW_NUMBER()`/`RANK()` + `WHERE rn = 1` | Use `ARRAY_AGG(... ORDER BY ... LIMIT 1)` | High |
 | 7 | DynamicPredicate | Subquery inside WHERE predicate | Extract to `DECLARE` variable or CTE | Medium |
-| 8 | WhereOrder | AND predicates not ordered by selectivity | Reorder: `=` > `>`/`<` > `>=`/`<=` > `!=` > `LIKE` | Medium |
-| 9 | JoinOrder | Smaller table on the left side of JOIN | Place largest table first (leftmost) | High |
+| 8 | WhereOrder | AND predicates not ordered by selectivity | Reorder: `=` > `>`/`<` > `>=`/`<=` > `!=` > `LIKE` (advisory -- BigQuery's optimizer may reorder independently) | Low |
+| 9 | JoinOrder | Smaller table on the left side of JOIN | Place largest table first (advisory -- optimizer usually handles this) | Low |
 | 10 | MissingDropStatement | `CREATE TEMP TABLE` without corresponding `DROP` | Add `DROP TABLE` at end of script | Low |
 | 11 | ConvertTableToTemp | `CREATE TABLE` + `DROP TABLE` in same script | Use `CREATE TEMP TABLE` instead | Low |
 

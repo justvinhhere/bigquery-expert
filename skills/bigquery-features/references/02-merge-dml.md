@@ -43,14 +43,19 @@ WHEN NOT MATCHED BY TARGET THEN
           TRUE, CURRENT_TIMESTAMP(), TIMESTAMP('9999-12-31'));
 
 -- Step 2: Insert new current rows for changed records
+-- Best practice: identify changed records from staging vs current target,
+-- not by reading back expired rows (which risks matching old history).
 INSERT INTO `project.dataset.customers_scd2`
   (customer_id, name, email, is_current, valid_from, valid_to)
 SELECT s.customer_id, s.name, s.email, TRUE, CURRENT_TIMESTAMP(), TIMESTAMP('9999-12-31')
 FROM `project.dataset.staging_customers` s
-JOIN `project.dataset.customers_scd2` t
-  ON s.customer_id = t.customer_id
-  AND t.is_current = FALSE
-  AND t.valid_to >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 MINUTE);
+WHERE EXISTS (
+  SELECT 1 FROM `project.dataset.customers_scd2` t
+  WHERE t.customer_id = s.customer_id
+    AND t.is_current = FALSE
+    AND t.valid_to = (SELECT MAX(t2.valid_to) FROM `project.dataset.customers_scd2` t2
+                      WHERE t2.customer_id = s.customer_id)
+);
 
 -- Delete unmatched rows in target
 MERGE INTO `project.dataset.products` AS target
@@ -66,4 +71,5 @@ WHEN NOT MATCHED BY SOURCE THEN
 - **DML concurrency:** BigQuery does not enforce a hard daily DML quota. However, at most 2 concurrent mutating DML statements (UPDATE/DELETE/MERGE) run per table, with up to 20 queued as PENDING. Plan accordingly for high-frequency merge pipelines.
 - **Column-level lineage:** MERGE does not support `SELECT *` in the INSERT clause. You must list columns explicitly.
 - **Partitioned tables:** MERGE on partitioned tables can modify multiple partitions in one statement.
-- **Streaming buffer:** MERGE cannot target rows still in the streaming buffer (recent inserts via the streaming API). Wait for the buffer to flush (~30 min) or use `_PARTITIONTIME IS NOT NULL` to filter.
+- **Streaming buffer (legacy insertAll API):** MERGE fails with a runtime error if matched target rows are in the streaming buffer. Wait for the buffer to flush (~30 min). The `_PARTITIONTIME IS NOT NULL` filter only excludes buffered rows from source-side scans, not from target matches.
+- **Storage Write API:** No streaming buffer restriction. MERGE on recently written rows is fully supported.

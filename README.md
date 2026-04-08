@@ -1,137 +1,98 @@
-# BigQuery Optimizer
+# BigQuery Expert
 
-The essential BigQuery plugin for Claude Code. Comprehensive skill suite covering query optimization, SQL generation, schema design, cost optimization, and BigQuery-specific features.
+A comprehensive BigQuery plugin for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Five integrated skill areas that activate automatically -- writing queries, designing schemas, optimizing costs, detecting anti-patterns, and navigating BigQuery-specific features.
 
-Based on anti-pattern knowledge from [GoogleCloudPlatform/bigquery-antipattern-recognition](https://github.com/GoogleCloudPlatform/bigquery-antipattern-recognition).
+## Skills
 
-## What It Does
+| Skill | Coverage |
+|-------|----------|
+| **Query Generation** | Generate optimized SQL from natural language. Convert queries from PostgreSQL, MySQL, Snowflake, Redshift, and SQL Server. |
+| **Query Optimization** | Detect and fix 11 SQL anti-patterns with before/after rewrites. Project-wide scanning across `.sql` and code files. |
+| **Schema Design** | Partitioning (time-unit, integer-range, ingestion-time), clustering, nested/repeated fields (STRUCT/ARRAY), denormalization, table types, and data type selection. |
+| **Cost Optimization** | On-demand vs editions pricing, bytes-billed reduction, slot optimization, materialized views, query caching, storage management, and dry-run estimation. |
+| **BigQuery Features** | STRUCT/ARRAY/UNNEST, MERGE DML, scripting, JSON functions, approximate aggregation, geography, BigQuery ML, search indexes, and vector search. |
 
-This plugin makes Claude a BigQuery expert. It covers five skill areas that activate automatically based on what you're doing:
-
-| Skill | What It Does | Triggers When You... |
-|-------|-------------|---------------------|
-| **Query Optimization** | Detects 11 SQL anti-patterns, provides before/after fixes | Review or optimize existing SQL |
-| **Query Generation** | Generates optimized SQL from natural language, converts between dialects | Ask Claude to write a query |
-| **Schema Design** | Recommends partitioning, clustering, nested fields, data types | Design tables or ask about schema |
-| **Cost Optimization** | Estimates costs, reduces bytes billed, optimizes slot usage | Ask about costs or expensive queries |
-| **BigQuery Features** | Expert guidance on STRUCT/ARRAY, MERGE, scripting, BQML, and more | Ask about specific BQ features |
+Skills activate based on context. Ask Claude to write a query and the generation skill engages. Discuss partitioning and the schema design skill kicks in. Multiple skills can activate simultaneously when a request spans areas.
 
 ## Installation
 
-### Step 1: Add the Marketplace
+### Add the marketplace
 
-```bash
-/plugin marketplace add justvinhhere/bigquery-optimizer
+```
+/plugin marketplace add justvinhhere/bigquery-expert
 ```
 
-This registers the plugin catalog with Claude Code.
+### Install the plugin
 
-### Step 2: Install the Plugin
-
-**Option A -- From the UI:**
-
-```bash
-/plugin
+```
+/plugin install bigquery-expert@justvinhhere-bigquery-expert
 ```
 
-Go to the **Discover** tab, select **bigquery-optimizer**, and choose your installation scope (User, Project, or Local).
+Or open `/plugin`, go to the **Discover** tab, and select **bigquery-expert**.
 
-**Option B -- From the command line:**
+### Activate
 
-```bash
-/plugin install bigquery-optimizer@justvinhhere-bigquery-optimizer
 ```
-
-### Step 3: Activate
-
-```bash
 /reload-plugins
 ```
 
-This loads the plugin without restarting Claude Code.
-
-### Verify Installation
-
-Run `/plugin` and go to the **Installed** tab to confirm `bigquery-optimizer` is listed and enabled.
-
 ## Commands
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `bq-review` | Review SQL for anti-patterns | `/bigquery-optimizer:bq-review path/to/query.sql` |
-| `bq-optimize` | Fix all detected anti-patterns | `/bigquery-optimizer:bq-optimize path/to/query.sql` |
-| `bq-generate` | Generate SQL from a description | `/bigquery-optimizer:bq-generate "daily active users by country"` |
-| `bq-design-table` | Design a table schema | `/bigquery-optimizer:bq-design-table "user events with timestamps and metadata"` |
-| `bq-estimate-cost` | Estimate query or table cost | `/bigquery-optimizer:bq-estimate-cost path/to/query.sql` |
-| `bq-explain` | Explain a BigQuery feature | `/bigquery-optimizer:bq-explain "MERGE for upserts"` |
+| Command | What It Does |
+|---------|-------------|
+| `/bigquery-expert:bq-generate` | Generate optimized SQL from a natural language description |
+| `/bigquery-expert:bq-review` | Review SQL for performance anti-patterns |
+| `/bigquery-expert:bq-optimize` | Rewrite SQL with all detected anti-patterns fixed |
+| `/bigquery-expert:bq-design-table` | Design a table schema with partitioning, clustering, and data types |
+| `/bigquery-expert:bq-estimate-cost` | Estimate the cost of a query or table |
+| `/bigquery-expert:bq-explain` | Explain a BigQuery feature with working examples |
 
-All commands also accept inline SQL or work with the most recent SQL in the conversation.
+All commands accept a file path, inline SQL, or a description as an argument. Without arguments, they use the most recent SQL in the conversation.
+
+**Examples:**
+
+```
+/bigquery-expert:bq-generate "daily active users grouped by country for the last 30 days"
+/bigquery-expert:bq-review path/to/query.sql
+/bigquery-expert:bq-optimize "SELECT * FROM `project.dataset.events`"
+/bigquery-expert:bq-design-table "user click events with timestamp, page URL, and session ID"
+/bigquery-expert:bq-estimate-cost path/to/expensive_query.sql
+/bigquery-expert:bq-explain "MERGE for upserts"
+```
 
 ## Agents
 
-Ask Claude naturally and the right agent will activate:
+Agents run autonomously across your project when you ask naturally:
 
-| Agent | Trigger Phrases |
-|-------|----------------|
-| **bq-reviewer** | "Review all SQL files for anti-patterns", "Scan this project for BigQuery issues" |
-| **bq-schema-advisor** | "Audit my table schemas", "Recommend partitioning strategies for this project" |
-| **bq-cost-analyzer** | "Which queries are most expensive?", "Find cost optimization opportunities" |
+| Agent | Use When You Say... |
+|-------|---------------------|
+| **bq-reviewer** | "Review all SQL files in this project for anti-patterns" |
+| **bq-schema-advisor** | "Audit my table schemas and recommend partitioning strategies" |
+| **bq-cost-analyzer** | "Which queries in this project are the most expensive?" |
 
-## Skills Reference
+## Anti-Pattern Detection
 
-### Query Optimization (11 Anti-Patterns)
+The query optimization skill detects 11 BigQuery SQL anti-patterns:
 
-| # | Anti-Pattern | Description | Severity |
-|---|-------------|-------------|----------|
-| 1 | SimpleSelectStar | `SELECT *` when only specific columns are needed | High |
-| 2 | SemiJoinWithoutAgg | `IN`/`NOT IN` subquery without `DISTINCT` | Medium |
-| 3 | CTEsEvalMultipleTimes | CTE referenced multiple times (re-executed each time) | High |
-| 4 | OrderByWithoutLimit | `ORDER BY` without `LIMIT` on outermost query | Medium |
-| 5 | StringComparison | `REGEXP_CONTAINS` where `LIKE` suffices | Low |
-| 6 | LatestRecordWithAnalyticFun | `ROW_NUMBER() + WHERE rn=1` instead of `ARRAY_AGG` | High |
-| 7 | DynamicPredicate | Subquery inside WHERE clause | Medium |
-| 8 | WhereOrder | WHERE predicates not ordered by selectivity | Medium |
-| 9 | JoinOrder | Smaller table placed before larger in JOIN | High |
-| 10 | MissingDropStatement | TEMP table created without DROP statement | Low |
-| 11 | ConvertTableToTemp | Persistent table created and dropped in same script | Low |
+| # | Pattern | Fix | Severity |
+|---|---------|-----|----------|
+| 1 | `SELECT *` on single-table query | Specify only needed columns | High |
+| 2 | `IN`/`NOT IN` without `DISTINCT` | Add `DISTINCT` to subquery | Medium |
+| 3 | CTE referenced multiple times | Convert to `CREATE TEMP TABLE` | High |
+| 4 | `ORDER BY` without `LIMIT` | Add `LIMIT` clause | Medium |
+| 5 | `REGEXP_CONTAINS` for simple patterns | Use `LIKE` instead | Low |
+| 6 | `ROW_NUMBER()` + `WHERE rn = 1` | Use `ARRAY_AGG(... LIMIT 1)` | High |
+| 7 | Subquery inside WHERE | Extract to `DECLARE` variable or CTE | Medium |
+| 8 | WHERE predicates not ordered by selectivity | Reorder by operator cost | Medium |
+| 9 | Smaller table first in JOIN | Place largest table first | High |
+| 10 | `CREATE TEMP TABLE` without `DROP` | Add `DROP TABLE` at end of script | Low |
+| 11 | `CREATE TABLE` + `DROP TABLE` in same script | Use `CREATE TEMP TABLE` instead | Low |
 
-### Schema Design
+Based on [BigQuery Anti-Pattern Recognition](https://github.com/GoogleCloudPlatform/bigquery-antipattern-recognition) by Google Cloud Platform (Apache 2.0).
 
-Covers partitioning strategies (time-unit, integer-range, ingestion-time), clustering (up to 4 columns), nested/repeated fields (STRUCT/ARRAY), denormalization patterns, table types (native, external, views, materialized views, clones), and data type best practices.
+## Example: Before and After
 
-### Cost Optimization
-
-Covers pricing models (on-demand vs editions), bytes-billed reduction, slot optimization, materialized views and query caching, storage optimization, and cost estimation with `--dry_run`.
-
-### Query Generation
-
-Generates optimized BigQuery SQL from natural language descriptions. Handles schema context, proactively avoids all 11 anti-patterns, and supports dialect conversion from PostgreSQL, MySQL, Snowflake, Redshift, and SQL Server.
-
-### BigQuery Features
-
-Expert guidance on STRUCT/ARRAY/UNNEST, MERGE DML, scripting (DECLARE, IF, LOOP), JSON functions, approximate aggregation, geography/GIS functions, BigQuery ML, search indexes, and vector search.
-
-## Examples
-
-### Generate a Query
-
-```
-/bigquery-optimizer:bq-generate "top 10 customers by total order value in the last 30 days"
-```
-
-### Review Existing SQL
-
-```
-/bigquery-optimizer:bq-review "SELECT * FROM `project.dataset.orders`"
-```
-
-### Design a Table
-
-```
-/bigquery-optimizer:bq-design-table "user click events with timestamp, page URL, session ID, and user agent"
-```
-
-### Before: ROW_NUMBER for Latest Record (High Severity)
+**Before** -- `ROW_NUMBER()` for latest record per group (High severity):
 
 ```sql
 SELECT taxi_id, trip_seconds, fare
@@ -143,7 +104,7 @@ FROM (
 WHERE rn = 1
 ```
 
-### After: ARRAY_AGG (Optimized)
+**After** -- `ARRAY_AGG` (optimized):
 
 ```sql
 SELECT event.*
@@ -156,32 +117,33 @@ FROM (
 )
 ```
 
+## Plugin Contents
+
+```
+skills/
+  bigquery-optimization/       11 anti-pattern references
+  bigquery-query-generation/   Schema-aware generation, common patterns, dialect conversion
+  bigquery-schema-design/      Partitioning, clustering, nested fields, denormalization, types
+  bigquery-cost-optimization/  Pricing, bytes-billed, slots, materialized views, storage
+  bigquery-features/           STRUCT/ARRAY, MERGE, scripting, JSON, geo, BQML, vector search
+commands/
+  bq-generate, bq-review, bq-optimize, bq-design-table, bq-estimate-cost, bq-explain
+agents/
+  bq-reviewer, bq-schema-advisor, bq-cost-analyzer
+```
+
 ## Uninstall
 
-```bash
-/plugin uninstall bigquery-optimizer@justvinhhere-bigquery-optimizer
 ```
-
-To also remove the marketplace:
-
-```bash
-/plugin marketplace remove justvinhhere-bigquery-optimizer
+/plugin uninstall bigquery-expert@justvinhhere-bigquery-expert
+/plugin marketplace remove justvinhhere-bigquery-expert
 ```
-
-## Attribution
-
-The anti-pattern detection knowledge in this plugin is derived from [BigQuery Anti-Pattern Recognition](https://github.com/GoogleCloudPlatform/bigquery-antipattern-recognition) by Google Cloud Platform, licensed under the Apache License 2.0.
 
 ## Contributing
 
-Contributions are welcome! Please:
+Contributions welcome. Fork the repository, create a feature branch, and submit a pull request.
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-For bug reports and feature requests, please [open an issue](https://github.com/justvinhhere/bigquery-optimizer/issues).
+For bugs and feature requests, [open an issue](https://github.com/justvinhhere/bigquery-expert/issues).
 
 ## License
 

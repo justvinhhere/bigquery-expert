@@ -1,12 +1,12 @@
 {
-  "name": "justvinhhere-bigquery-optimizer",
+  "name": "justvinhhere-bigquery-expert",
   "description": "Comprehensive BigQuery skill suite for Claude Code",
   "owner": {
     "name": "Vinh Nguyen"
   },
   "plugins": [
     {
-      "name": "bigquery-optimizer",
+      "name": "bigquery-expert",
       "description": "Comprehensive BigQuery skill suite: query optimization, SQL generation, schema design, cost optimization, and feature guidance.",
       "source": "./"
     }

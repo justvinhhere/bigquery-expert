@@ -1,11 +1,11 @@
 {
-  "name": "bigquery-optimizer",
+  "name": "bigquery-expert",
   "version": "2.0.0",
   "description": "Comprehensive BigQuery skill suite: query optimization, SQL generation, schema design, cost optimization, and feature guidance.",
   "author": {
     "name": "Vinh Nguyen"
   },
-  "repository": "https://github.com/justvinhhere/bigquery-optimizer",
+  "repository": "https://github.com/justvinhhere/bigquery-expert",
   "license": "Apache-2.0",
   "keywords": [
     "bigquery",

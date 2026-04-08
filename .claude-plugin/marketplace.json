@@ -8,7 +8,7 @@
     {
       "name": "bigquery-optimizer",
       "description": "Detects 11 BigQuery SQL performance anti-patterns and helps write optimized queries.",
-      "source": "."
+      "source": "./"
     }
   ]
 }

@@ -23,7 +23,7 @@ Choosing the wrong pricing model can double your BigQuery spend. On-demand charg
 | Enterprise Plus | $0.10/slot-hr | 99.99% SLA, advanced DR, compliance |
 
 - Autoscaling adjusts slot count to demand (pay only for what you use).
-- Commitment discounts: ~10% (1-yr), ~20% (3-yr) on eligible BigQuery compute spend.
+- Capacity commitment discounts: 20% (1-yr), 40% (3-yr) for Enterprise/Enterprise Plus. Spend-based CUDs (a separate product) offer ~10% (1-yr), ~20% (3-yr) on eligible compute spend.
 
 ### Break-Even Analysis
 ```

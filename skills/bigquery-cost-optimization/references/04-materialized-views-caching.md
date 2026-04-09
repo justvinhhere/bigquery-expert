@@ -26,7 +26,7 @@ GROUP BY 1, 2
 ```
 
 ### Auto-Refresh and Smart Tuning
-MVs refresh automatically. Control staleness with `OPTIONS (max_staleness = INTERVAL 30 MINUTE)`. BigQuery auto-rewrites queries to use MVs when the MV and base table are in the same dataset and the query is a subset of the MV aggregation (smart tuning, on by default).
+MVs refresh automatically. Control staleness with `OPTIONS (max_staleness = INTERVAL 30 MINUTE)`. BigQuery auto-rewrites queries to use MVs when the MV belongs to the same project as a base table (or the querying project) and the query is a subset of the MV aggregation (smart tuning, on by default).
 
 ### Query Cache
 - Identical query text hitting the same table returns cached results (free on on-demand).
@@ -42,7 +42,7 @@ MVs refresh automatically. Control staleness with `OPTIONS (max_staleness = INTE
 
 ## Edge Cases / Pitfalls
 - Incremental MVs support INNER JOINs (left-side table only receives new data) and JOIN UNNEST. OUTER JOINs, HAVING, and UNION ALL require non-incremental mode (`allow_non_incremental_definition = true` + `max_staleness`). No JavaScript UDFs or non-deterministic functions.
-- For smart tuning (auto-rewrite), the MV must be in the same dataset as the base table. Cross-dataset MVs are supported but do not benefit from automatic query rewriting.
+- For smart tuning (auto-rewrite), the MV must belong to the same project as a base table or the querying project. Cross-dataset MVs within the same project benefit from auto-rewrite; cross-project MVs do not.
 - Auto-rewrite does not work if the query includes columns not in the MV.
 - MV storage counts toward your storage billing.
 - `max_staleness` trades freshness for cost; set appropriately per use case.

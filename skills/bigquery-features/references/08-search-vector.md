@@ -24,10 +24,15 @@ FROM `project.dataset.articles`
 WHERE SEARCH(title, 'bigquery optimization')
 LIMIT 20;
 
--- Create vector index for faster search
+-- Vector index: IVF (best for small/single query batches)
 CREATE VECTOR INDEX doc_vector_idx
 ON `project.dataset.doc_embeddings`(embedding)
 OPTIONS(index_type = 'IVF', distance_type = 'COSINE');
+
+-- Vector index: TREE_AH (ScaNN-based, best for large batch queries)
+-- CREATE VECTOR INDEX doc_vector_idx_tree
+-- ON `project.dataset.doc_embeddings`(embedding)
+-- OPTIONS(index_type = 'TREE_AH', distance_type = 'COSINE');
 
 -- Find similar documents by embedding
 SELECT
@@ -57,6 +62,7 @@ FROM VECTOR_SEARCH(TABLE `project.dataset.knowledge_base`, 'embedding',
 - **Search index cost:** Search indexes consume additional storage (typically 50-100% of the indexed columns). Monitor with `INFORMATION_SCHEMA.SEARCH_INDEXES`.
 - **Analyzer choice:** `LOG_ANALYZER` is best for logs/structured text. `NO_OP_ANALYZER` for exact match. `PATTERN_ANALYZER` for custom tokenization. Wrong analyzer yields poor recall.
 - **SEARCH() without an index:** SEARCH() works without a search index by falling back to a full table scan. An index is strongly recommended for large tables to avoid scanning all data, but its absence does not cause an error.
+- **Vector index types:** `IVF` (default, small query batches) and `TREE_AH` (ScaNN algorithm, large batch queries). Choose based on your query pattern.
 - **Vector distance metrics:** Supported types are `COSINE`, `EUCLIDEAN`, and `DOT_PRODUCT`. Use COSINE for normalized embeddings (most common), EUCLIDEAN for spatial data.
 - **Vector index threshold:** Vector indexes provide acceleration only for tables above ~10MB of embedding data. Smaller tables use brute-force scan automatically.
 - **Embedding dimensions:** BigQuery stores embeddings as ARRAY<FLOAT64> with no strict dimension cap. Practical limits depend on storage and index build time. Google's own models output up to 1408 dimensions; OpenAI's text-embedding-3-large outputs 3072.

@@ -18,7 +18,7 @@ SELECT
   'order-1' AS order_id,
   STRUCT('Alice' AS name, 'alice@example.com' AS email) AS customer,
   [STRUCT('Widget' AS product, 2 AS qty, 9.99 AS price),
-   STRUCT('Gadget', 1, 24.99)] AS items;
+   STRUCT('Gadget' AS product, 1 AS qty, 24.99 AS price)] AS items;
 
 -- Query nested fields
 SELECT

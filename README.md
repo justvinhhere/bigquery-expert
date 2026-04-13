@@ -1,4 +1,4 @@
-# BigQuery Expert
+# BigQuery Skills: BigQuery Expert
 
 A comprehensive BigQuery plugin for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Five integrated skill areas that activate automatically -- writing queries, designing schemas, optimizing costs, detecting anti-patterns, and navigating BigQuery-specific features.
 
